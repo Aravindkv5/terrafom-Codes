@@ -90,3 +90,15 @@ systemctl enable httpd
 echo "Hi my private/hostname is $(hostname -f)" > /var/www/html/index.html
 systemctl restart httpd
 
+
+echo "[-- EBS Volume Mount | START --]"
+mkdir /home/aravind
+mkfs -t xfs /dev/sdf
+mount /dev/sdf /home/aravind
+#For automation when rebooted
+echo "/dev/sdf / xfs defaults 0 0" >> /etc/fstab
+echo "mkfs -t xfs /dev/sdf" >> /etc/rc.local
+echo "mount /dev/sdf /home/aravind" >> /etc/rc.local
+chmod +x /etc/rc.d/rc.local
+
+
