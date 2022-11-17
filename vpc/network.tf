@@ -51,6 +51,19 @@ resource "aws_security_group" "ssh-allowed" {
         protocol = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
+
+    ingress {
+              cidr_blocks      = ["0.0.0.0/0"]
+              description      = "For HHTPS"
+              from_port        = 443
+              ipv6_cidr_blocks = []
+              prefix_list_ids  = []
+              protocol         = "tcp"
+              security_groups  = []
+              self             = false
+              to_port          = 443
+            }
+
     tags = {
         Name = "ssh-allowed"
     }
