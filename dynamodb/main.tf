@@ -18,5 +18,5 @@ resource "aws_dynamodb_table" "trial-dynamo" {
 resource "aws_dynamodb_table_item" "employee-list" {
     table_name = aws_dynamodb_table.trial-dynamo.name
     hash_key = aws_dynamodb_table.trial-dynamo.hash_key
-    item = file("item.json")
+    item = file("items.json")
 }
