@@ -1,0 +1,10 @@
+Error: Missing resource instance key
+│
+│   on main.tf line 33, in resource "aws_volume_attachment" "ebs-volume-attachment":
+│   33:   instance_id = "${aws_instance.terraform.id}"
+│
+│ Because aws_instance.terraform has "count" set, its attributes must be accessed on specific instances.    
+│
+│ For example, to correlate with indices of a referring resource, use:
+│     aws_instance.terraform[count.index]
+╵
