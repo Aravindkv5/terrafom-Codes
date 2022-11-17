@@ -15,5 +15,15 @@ resource "aws_instance" "terraform" {
     user_data = file("userdata.tpl")
       
 }
+
+terraform {
+  backend "s3" {
+    bucket = "Bucket-name"
+    key = "path"
+    region = "region"
+    dynamodb_table = "dynaodb-name"
+  }
+}
+
 #name was empty in created ec2 instance and output was instance ID
 #need to check on how to provide keypair
