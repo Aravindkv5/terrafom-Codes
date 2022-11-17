@@ -1,0 +1,24 @@
+For single DynamoDB Item we can use this 
+
+{
+  "Employee-no": {"S": "001"},
+  "Name": {"S": "Aravind"},
+  "Age": {"N": "25"},
+  "City": {"S": "Chennai"}
+}
+
+
+
+# For multiple DynamoDB Item we need to use for_each
+check after assigning the attributes in main.tf like below 
+attribute {
+    name = "Name"
+    type = "S"
+  }
+  attribute {
+    name = "Age"
+  }
+  attribute {
+    City = "S"
+  }
+
