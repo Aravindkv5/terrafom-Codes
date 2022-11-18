@@ -65,8 +65,8 @@ resource "aws_launch_template" "terraform-test-lt" {
 resource "aws_autoscaling_group" "asg-test" {
   name                 = "terraform-asg-example"
   availability_zones = [var.availability_zone]
-  min_size             = 0
-  max_size             = 0
+  min_size             = 1
+  max_size             = 1
 
   launch_template {
     id = aws_launch_template.terraform-test-lt.id
