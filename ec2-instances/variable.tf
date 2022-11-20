@@ -27,7 +27,7 @@ variable "iam_instance_profile" {
 }
 
 variable "security_groups" {
-    default = ["sg-032e1e4f4ee7654dd"]
+    default = ["sg-032e1e4f4ee7654dd",]
   
 }
 
