@@ -1,6 +1,6 @@
 resource "aws_cloudfront_distribution" "tf" {
   origin {
-    domain_name = var.s3_endpoint
+    domain_name = var.domain_name
     origin_id = var.origin_id
 
     custom_origin_config {
