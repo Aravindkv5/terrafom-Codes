@@ -1,7 +1,7 @@
 resource "aws_cloudfront_distribution" "tf" {
   origin {
     domain_name = var.domain_name
-    origin_id = var.origin_id
+    origin_id = local.s3_origin_id
 
     custom_origin_config {
       http_port = "80"
@@ -11,7 +11,8 @@ resource "aws_cloudfront_distribution" "tf" {
     }
   }
 
-  enabled = true
+  enabled = true #enabled (Required) - Whether the distribution is enabled to accept end user requests for content.
+  comment = "Cloudfront terraform"
   default_root_object = "aws.jpg"
 
   default_cache_behavior {
@@ -19,7 +20,10 @@ resource "aws_cloudfront_distribution" "tf" {
     compress = true
     allowed_methods = ["GET", "HEAD"]
     cached_methods = ["GET", "HEAD"]
-    target_origin_id = var.origin_id
+    min_ttl                = 0
+    default_ttl            = 0
+    max_ttl                = 86400
+    target_origin_id = local.s3_origin_id
 
     forwarded_values {
       query_string = false
@@ -27,12 +31,18 @@ resource "aws_cloudfront_distribution" "tf" {
         forward = "none"
       }
     }
+
+    
   }
 
   restrictions {
     geo_restriction {
       restriction_type = "none"
     }
+  }
+
+   tags = {
+    Environment = "test-terraform"
   }
 
   viewer_certificate {
