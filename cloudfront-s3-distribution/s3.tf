@@ -31,3 +31,11 @@ resource "aws_s3_bucket_object" "terraform-bucket" {
   etag = file("index.html")
 }
 
+
+resource "aws_s3_bucket_object" "aws-image" {
+    bucket = aws_s3_bucket.cloudfront-s3.id
+    content = filemd5("aws.jpg")
+    key = "myfirstterraformbucket/aws.jpg"
+    acl    = "public-read" //Error: expected acl to be one of [private public-read public-read-write 
+}
+

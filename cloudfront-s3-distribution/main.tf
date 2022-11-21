@@ -12,7 +12,7 @@ resource "aws_cloudfront_distribution" "tf" {
   }
 
   enabled = true
-  default_root_object = "index.html"
+  default_root_object = "aws.jpg"
 
   default_cache_behavior {
     viewer_protocol_policy = "redirect-to-https"
