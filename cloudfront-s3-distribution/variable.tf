@@ -14,3 +14,8 @@ variable "bucket-region" {
 variable "domain-name" {
   default = "amazon.com"
 }
+
+variable "acl" {
+    default = "public-read"
+  
+}
