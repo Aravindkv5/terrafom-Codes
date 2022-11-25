@@ -3,6 +3,9 @@
 #This script is to install some packages in the new linux servers
 
 # Updating the yum reository
+
+
+
 echo
 "=============================================================================
                     Updating the yum repository
@@ -14,28 +17,28 @@ echo
 ============================================================================="
 
 # Installing Jenkins
-echo 
-"============================================================================
-                     Downloading Jenkins and its dependencies
-============================================================================="
-sudo wget -O /etc/yum.repos.d/jenkins.repo \
-    https://pkg.jenkins.io/redhat-stable/jenkins.repo
-sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
-sudo yum upgrade
-sudo amazon-linux-extras install java-openjdk11 -y
+# echo 
+# "============================================================================
+#                      Downloading Jenkins and its dependencies
+# ============================================================================="
+# sudo wget -O /etc/yum.repos.d/jenkins.repo \
+#     https://pkg.jenkins.io/redhat-stable/jenkins.repo
+# sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+# sudo yum upgrade
+# sudo amazon-linux-extras install java-openjdk11 -y
 
-echo 
-"============================================================================
-                        Installing Jenkins 
-============================================================================="
-yum install jenkins -y
-systemctl enable jenkins
-systemctl start jenkins
-systemctl status jenkins
-echo 
-"========================================================================
-                    Jenkins Installation complete
-==============================================================================="
+# echo 
+# "============================================================================
+#                         Installing Jenkins 
+# ============================================================================="
+# yum install jenkins -y
+# systemctl enable jenkins
+# systemctl start jenkins
+# systemctl status jenkins
+# echo 
+# "========================================================================
+#                     Jenkins Installation complete
+# ==============================================================================="
 
 # Installing Python
 
@@ -111,3 +114,25 @@ echo "mkfs -t xfs /dev/sdf" >> /etc/rc.local
 echo "mount /dev/sdf /home/aravind" >> /etc/rc.local
 chmod +x /etc/rc.d/rc.local
 
+
+#Testing EID automation 
+
+INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+            MAXWAIT=3
+            ALLOC_ID=${IPAddresses}
+            echo "Checking if EIP with ALLOC_ID[$ALLOC_ID] is free...."
+            ISFREE=$(aws ec2 describe-addresses --allocation-ids $ALLOC_ID --query Addresses[].InstanceId --output text --region ${AWS::Region})
+            STARTWAIT=$(date +%s)
+            while [ ! -z "$ISFREE" ]; do
+              if [ "$(($(date +%s) - $STARTWAIT))" -gt $MAXWAIT ]; then
+                echo "WARNING: We waited 30 seconds, we're forcing it now."
+                ISFREE=""
+              else
+                echo "Waiting for EIP with ALLOC_ID[$ALLOC_ID] to become free...."
+                sleep 3
+                ISFREE=$(aws ec2 describe-addresses --allocation-ids $ALLOC_ID --query Addresses[].InstanceId --output text --region ${AWS::Region})
+              fi
+            done
+            echo Running: aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $ALLOC_ID --allow-reassociation --region ${AWS::Region}}
+            aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $ALLOC_ID --allow-reassociation --region ${AWS::Region}
+            yum install  jq -y

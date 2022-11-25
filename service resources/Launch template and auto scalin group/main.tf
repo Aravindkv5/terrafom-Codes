@@ -22,6 +22,10 @@ resource "aws_launch_template" "terraform-test-lt" {
     cpu_credits = "standard"
   }
 
+  iam_instance_profile {
+    name = var.iam_instance_profile[1]
+  }
+
   ebs_optimized = false
 
   image_id = var.ami
@@ -65,8 +69,8 @@ resource "aws_launch_template" "terraform-test-lt" {
 resource "aws_autoscaling_group" "asg-test" {
   name                 = "terraform-asg-example"
   availability_zones = [var.availability_zone]
-  min_size             = 1
-  max_size             = 1
+  min_size             = 3
+  max_size             = 3
 
   launch_template {
     id = aws_launch_template.terraform-test-lt.id

@@ -21,7 +21,7 @@ variable "instance_count" {
   
 }
 variable "iam_instance_profile" {
-    default = ["ec2-ssm-role"]
+    default = ["ec2-ssm-role","EIP-test"]
     description = "we can assign the IAM role needed to the EC2 instances"
   
 }
@@ -56,6 +56,8 @@ variable "hibernation" {
     type = bool
 
 }
+
+
 
 
 #variable "aws_key_pair_id" {
