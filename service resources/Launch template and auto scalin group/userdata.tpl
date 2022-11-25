@@ -119,7 +119,7 @@ chmod +x /etc/rc.d/rc.local
 
 INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/instance-id)
             MAXWAIT=3
-            ALLOC_ID=${13.234.155.97,15.207.94.226,65.2.41.242}
+            ALLOC_ID=${"13.234.155.97,15.207.94.226,65.2.41.242"}
             echo "Checking if EIP with ALLOC_ID[$ALLOC_ID] is free...."
             ISFREE=$(aws ec2 describe-addresses --allocation-ids $ALLOC_ID --query Addresses[].InstanceId --output text --region ap-south-1)
             STARTWAIT=$(date +%s)
