@@ -115,24 +115,26 @@ echo "mount /dev/sdf /home/aravind" >> /etc/rc.local
 chmod +x /etc/rc.d/rc.local
 
 
-#Testing EID automation 
+echo "Testing EIP automation" 
 
-INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/instance-id)
-            MAXWAIT=3
-            ALLOC_ID=${"13.234.155.97,15.207.94.226,65.2.41.242"}
-            echo "Checking if EIP with ALLOC_ID[$ALLOC_ID] is free...."
-            ISFREE=$(aws ec2 describe-addresses --allocation-ids $ALLOC_ID --query Addresses[].InstanceId --output text --region ap-south-1)
-            STARTWAIT=$(date +%s)
-            while [ ! -z "$ISFREE" ]; do
-              if [ "$(($(date +%s) - $STARTWAIT))" -gt $MAXWAIT ]; then
-                echo "WARNING: We waited 30 seconds, we're forcing it now."
-                ISFREE=""
-              else
-                echo "Waiting for EIP with ALLOC_ID[$ALLOC_ID] to become free...."
-                sleep 3
-                ISFREE=$(aws ec2 describe-addresses --allocation-ids $ALLOC_ID --query Addresses[].InstanceId --output text --region ap-south-1)
-              fi
-            done
-            echo Running: aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $ALLOC_ID --allow-reassociation --region ap-south-1
-            aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $ALLOC_ID --allow-reassociation --region ap-south-1
-            yum install  jq -y
+INSTANCE_ID=$(ec2-metadata --instance-id | cut -d " " -f 2);
+  MAXWAIT=10
+  # Get list of EIPs
+  EIP_LIST=$[eipalloc-09e7274dd3c641ae6,eipalloc-05e8e926926f9de55]
+  # Iterate over EIP list
+  for EIP in $${EIP_LIST}; do
+  echo "Checking if EIP with ALLOC_ID[$EIP] is free...."
+    ISFREE=$(aws ec2 describe-addresses --allocation-ids eipalloc-$EIP --query Addresses[].InstanceId --output text --region ap-south-1)
+     STARTWAIT=$(date +%s)
+      while [ ! -z "$ISFREE" ]; do
+        if [ "$(($(date +%s) - $STARTWAIT))" -gt $MAXWAIT ]; then
+        echo "WARNING: We waited 30 seconds, we're forcing it now."
+        ISFREE=""
+        else
+        echo "Waiting for EIP with ALLOC_ID[eipalloc-$EIP] to become free...."
+        sleep 3
+        ISFREE=$(aws ec2 describe-addresses --allocation-ids eipalloc-$EIP --query Addresses[].InstanceId --output text --region ap-south-1)
+        fi
+        done
+        echo Running: aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id eipalloc-$EIP --allow-reassociation --region ap-south-1
+        aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id eipalloc-$EIP --allow-reassociation --region ap-south-1
