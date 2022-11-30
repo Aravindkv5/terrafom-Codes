@@ -116,23 +116,22 @@ chmod +x /etc/rc.d/rc.local
 
 echo "Testing EIP Automation"
 INSTANCE_ID=$(ec2-metadata --instance-id | cut -d " " -f 2);
-           MAXWAIT=10
-#List of EIPs
-           EIP_LIST=(eipalloc-05b7bbe1affef1765 eipalloc-0dd1d12d42e2890ab)
-           for EIP in $${EIP_LIST}; do
-           echo "Checking if EIP with ALLOC_ID[$EIP] is free"
-           ISFREE=$(aws ec2 describe-addresses --allocation-ids $EIP --query Addresses[].InstanceId --output text --region ap-south-1)
-           STARTWAIT=$(date +%s)
-            while [ ! -z "$ISFREE" ]; do
-              if [ "$(($(date +%s) - $STARTWAIT))" -gt $MAXWAIT ]; then
-              echo "WARNING: We waited 30 seconds, we're forcing it now."
-              ISFREE=""
-               else
-               echo "Waiting for EIP with ALLOC_ID[$EIP] to become free"
-               sleep 3
-               ISFREE=$(aws ec2 describe-addresses --allocation-ids $EIP --query Addresses[].InstanceId --output text --region ap-south-1)
-               fi
-               done
-               echo Running: aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP --allow-reassociation --region ap-south-1
-               aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP --allow-reassociation --region ap-south-1
-               yum install  jq -y
+
+INSTANCE_ID=$(ec2-metadata --instance-id | cut -d " " -f 2);
+EIP_LIST=(eipalloc-07da69856432f7cef eipalloc-0355263fcb50412ed)
+for EIP in $${EIP_LIST}; do
+        echo "Checkin if EIP is free"
+        ISFREE=$(aws ec2 describe-addresses --allocation-ids $EIP --query Addresses[].InstanceID --output text --region ap-south-1)
+        STARTWAIT=$(date +%s)
+        while [ ! -z "$ISFREE" ]; do
+                if [ "$(($(date +%s) - $STARTWAIT))" -gt $MAXWAIT ]; then
+                        echo "WARNING: We waited for 30 seconds, we are forcing it now."
+                        ISFREE=""
+                else
+                        echo "checking the other EIP [$EIP]"
+                        ISFREE=$(aws ec2 describe-adresses --allocation-ids $EIP --query Addresses[].InstanceID --output text --region ap-south-1)
+                fi
+        done
+        echo "Running: aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP --allow-reassociation --region ap-south-1"
+        aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP --allow-reassociation --region ap-south-1
+done
