@@ -116,22 +116,20 @@ chmod +x /etc/rc.d/rc.local
 
 echo "Testing EIP Automation"
 INSTANCE_ID=$(ec2-metadata --instance-id | cut -d " " -f 2);
-
-INSTANCE_ID=$(ec2-metadata --instance-id | cut -d " " -f 2);
 EIP_LIST=(eipalloc-07da69856432f7cef eipalloc-0355263fcb50412ed)
 for EIP in $${EIP_LIST}; do
         echo "Checkin if EIP is free"
-        ISFREE=$(aws ec2 describe-addresses --allocation-ids $EIP --query Addresses[].InstanceID --output text --region ap-south-1)
+        ISFREE=$(aws ec2 describe-addresses --allocation-ids $EIP_LIST --query Addresses[].InstanceID --output text --region ap-south-1)
         STARTWAIT=$(date +%s)
         while [ ! -z "$ISFREE" ]; do
                 if [ "$(($(date +%s) - $STARTWAIT))" -gt $MAXWAIT ]; then
                         echo "WARNING: We waited for 30 seconds, we are forcing it now."
                         ISFREE=""
                 else
-                        echo "checking the other EIP [$EIP]"
-                        ISFREE=$(aws ec2 describe-adresses --allocation-ids $EIP --query Addresses[].InstanceID --output text --region ap-south-1)
+                        echo "checking the other EIP [$EIP_LIST]"
+                        ISFREE=$(aws ec2 describe-adresses --allocation-ids $EIP_LIST --query Addresses[].InstanceID --output text --region ap-south-1)
                 fi
         done
-        echo "Running: aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP --allow-reassociation --region ap-south-1"
-        aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP --allow-reassociation --region ap-south-1
+        echo "Running: aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP_LIST --allow-reassociation --region ap-south-1"
+        aws ec2 associate-address --instance-id $INSTANCE_ID --allocation-id $EIP_LIST --allow-reassociation --region ap-south-1
 done
