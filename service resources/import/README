@@ -1,6 +1,0 @@
-# To import the resources we have to run terraform init after creating the provider.tf, then we have to create the main.tf then we have to run the terraform import command. 
-
-
-# terraform terraform import aws_instance.import-terraform i-0f0141d0af42eb911
-
-terraform import aws_instance.<name of the instance> <instance id>
